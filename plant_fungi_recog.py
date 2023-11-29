@@ -5,6 +5,7 @@ import os
 import torch
 from PIL import Image, ImageTk
 
+# This code makes DC's "Super Girls" look like a game of the year contender on Nintendo Switch
 # ================================================================================================================
 # plant information. Couldn't figure out how to put this in a seperate file, so for now
 # it'll be in the same file as the plant class.
@@ -120,7 +121,7 @@ class Plant(tk.Frame):
 
         self.canvas = Canvas(
             self,
-            bg="#AFAFAF",
+            bg="#0000FF",
             height=800,
             width=1200,
             bd=0,
@@ -132,85 +133,108 @@ class Plant(tk.Frame):
 
         self.camera = cv2.VideoCapture(0)
         self.image_saved = False
-        self.model_path = "frames/plant_stuff/best.pt"
+        self.model_path = "model/best.pt"
         self.model = torch.hub.load(
-            "frames/plant_stuff/yolov5", "custom", path=self.model_path, source="local"
+            "yolov5", "custom", path=self.model_path, source="local"
         )
 
-        # ====================================================================================================================
-        # Changes Tariq Made/Added
 
-        # Load in the Left Image of the panel:
-        # Load the image
-        image_path = "frames/plant_stuff/Left_Image.png"  # Replace this with the actual file path of your image
-        self.left_image = Image.open(image_path)
 
-        # Resize the image to your desired dimensions (width, height) with LANCZOS filter
-        new_width = 280  # Replace this with your desired width
-        new_height = 760  # Replace this with your desired height
-        self.left_image = self.left_image.resize((new_width, new_height), Image.LANCZOS)
+#====================================================================================================================
+    # Background Image of wood with plant on side
 
-        self.left_photo = ImageTk.PhotoImage(self.left_image)
+        self.original_image = Image.open("assets/plant_background.png")
+        self.resized_image = self.original_image.resize((1200, 800))
+        self.tk_image = ImageTk.PhotoImage(self.resized_image)
+        self.canvas.create_image(0,0, image=self.tk_image, anchor = "nw")
 
-        # Left image label
-        self.left_image_label = tk.Label(
+#====================================================================================================================
+# Intro canvas to display to the user
+#    
+        self.canvas2 = Canvas(
             self,
-            image=self.left_photo,
-            borderwidth=0,  # Set borderwidth to 0 to remove the border
-            highlightthickness=0,  # Set highlightthickness to 0 to remove the border
-        )
-        self.left_image_label.place(x=0, y=0)  # Adjust the coordinates as needed
-        # ====================================================================================================================
-        # Changes Tariq Made/Added
-
-        # Load in the Right Image of the panel:
-        # Load the image
-        image_path = "frames/plant_stuff/Right_Image.png"  # Replace this with the actual file path of your image
-        self.right_image = Image.open(image_path)
-
-        # Resize the image to your desired dimensions (width, height) with LANCZOS filter
-        new_width = 280  # Replace this with your desired width
-        new_height = 760  # Replace this with your desired height
-        self.right_image = self.right_image.resize(
-            (new_width, new_height), Image.LANCZOS
+            bg="#228B22",
+            height=225,
+            width=634,
+            bd=1,  # Set border width to 1 (or adjust to your preference)
+            highlightbackground="Black",  # Set the border color
+            highlightthickness=3,
+            relief="ridge",
         )
 
-        self.right_photo = ImageTk.PhotoImage(self.right_image)
+        self.canvas2.place(x=280, y=485)
 
-        # Right image label
-        self.right_image_label = tk.Label(
+
+        self.tempText = self.canvas2.create_text(
+            0,
+            0,
+            anchor="nw",
+            text="\n   Welcome to the Plant/Fungi Recognition Camera!\n\n   Please keep in mind that the accuracy of this model is close to Seventy-Five \n\n   percent for all classes.So make sure to be in a well-lit area before taking your \n\n   picture. Otherwise, happy identifying and enjoy the outdoors!",
+            fill="#FFFFFF",
+            font=("Inter Bold", 12, "bold"),
+        )
+
+
+#==========================================================================================================================
+# Canvas for Banner1 (Plant/Fungi Recognition Services)
+#    
+        self.canvas3 = Canvas(
             self,
-            image=self.right_photo,
-            borderwidth=0,  # Set borderwidth to 0 to remove the border
-            highlightthickness=0,  # Set highlightthickness to 0 to remove the border
+            bg="#228B22",
+            height=50,
+            width=1000,
+            bd=1,  # Set border width to 1 (or adjust to your preference)
+            highlightbackground="Black",  # Set the border color
+            highlightthickness=5,
+            relief="ridge",
         )
-        self.right_image_label.place(x=920, y=0)  # Adjust the coordinates as needed
-        # ====================================================================================================================
-        self.welcome_user = Text(
+
+        self.canvas3.place(x=0, y=30)
+
+
+        self.tempText = self.canvas3.create_text(
+            145.0,
+            15,
+            anchor="nw",
+            text="Plant/Fungi Recognition Services",
+            fill="#FFFFFF",
+            font=("Inter Bold", 20, "bold"),
+        )
+
+
+#==========================================================================================================================
+# Canvas for Banner2, with Delta Logo
+#    
+        self.canvas4 = Canvas(
             self,
-            wrap=tk.WORD,
-            width=74,
-            height=14,
-            bg="#00FFFF",
-            fg="#000000",
+            bg= "#228B22",
+            height=62,
+            width=178,
+            relief="ridge",
+            highlightthickness=0,  # Set highlightthickness to 0 to remove the border highlight
         )
-        self.welcome_user.insert(
-            tk.END,
-            "\nWelcome to the Plant/Fungi Recognition Camera!\n\nPlease keep in mind that the accuracy of this model is close to Seventy-Five percent for all classes.\n\nSo make sure to be in a well-lit area before taking your picture. \n\nOtherwise, happy identifying and enjoy the outdoors!",
-        )  # Insert initial text
-        self.welcome_user.place(x=280, y=480, width=640, height=240)
 
-        # Configure a tag for bold and center-aligned text
-        self.welcome_user.tag_configure("bold", font=("Helvetica", 14, "bold"))
-        self.welcome_user.tag_configure("center", justify="center")  # Center-align tag
+        self.canvas4.place(x=1015, y=30)
 
-        # Apply the bold and center-aligned tags to the entire text
-        self.welcome_user.tag_add("bold", "1.0", "end")
-        self.welcome_user.tag_add("center", "1.0", "end")
 
-        self.welcome_user.config(state=tk.DISABLED)
+        self.original_image4 = Image.open("assets/delta_logo.png")
+        self.resized_image = self.original_image4.resize((60, 60))
+        self.tk_image4 = ImageTk.PhotoImage(self.resized_image)
+        self.canvas4.create_image(105,0.5, image=self.tk_image4, anchor = "nw")
 
-        # ====================================================================================================================
+
+        self.tempText = self.canvas4.create_text(
+            10.0,
+            8.0,
+            anchor="nw",
+            text="ImgNav\nServices",
+            fill="#FFFFFF",
+            font=("Inter Bold", 15, "bold"),
+        )
+
+
+#==========================================================================================================================
+
 
         # capture button
 
@@ -226,32 +250,31 @@ class Plant(tk.Frame):
 
         self.camera_canvas = tk.Canvas(
             self,
-            width=640,
-            height=480,
-            bd=0,
-            highlightthickness=0,
+            # width=640,
+            # height=480,
+            width = 540, 
+            height= 380,
+            bd=1,  # Set border width to 1 (or adjust to your preference)
+            highlightbackground="Black",  # Set the border color
+            highlightthickness=3,
+            #bd=0,
+            #highlightthickness=0,
             relief="ridge",
         )
-        self.camera_canvas.place(x=self.findCenterx(self.camera_canvas), y=0)
+        self.camera_canvas.place(x=self.findCenterx(self.camera_canvas), y=94)
+        # self.camera_canvas.place(x=self.findCenterx(self.camera_canvas), y=0)
 
         # inital image
 
-        self.image = Image.open("frames/plant_stuff/default_img.png")
+        self.image = Image.open("assets/default_img.png")
         self.photo = ImageTk.PhotoImage(self.image)
         self.camera_image = self.camera_canvas.create_image(
             0, 0, anchor="nw", image=self.photo
         )
 
-        # result_label
-
-        # self.result_label = tk.Label(
-        #     self, text="test", font=("Helvetica", 12), foreground="black", bg="#AFAFAF"
-        # )
-        # self.result_label.place(x=self.findCenterx(self.result_label), y=500)
-
-        # update camera
-
         self.update_camera()
+
+
 
     def update_camera(self):
         if self.CameraUpdate:  # Corrected variable name
@@ -259,6 +282,11 @@ class Plant(tk.Frame):
             if ret:
                 frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)  # Convert BGR to RGB
                 frame = cv2.resize(frame, (640, 480))
+
+                # Flip the frame upside down
+                #frame = cv2.flip(frame, 0) #comment out to flip camera back to correct orientation
+                frame = cv2.flip(frame, -1)  # Use -1 as the flip code for both vertical and horizontal flip
+
                 self.image = Image.fromarray(frame)
                 self.photo = ImageTk.PhotoImage(self.image)
 
@@ -270,13 +298,13 @@ class Plant(tk.Frame):
             self.after(10, self.update_camera)
 
     def capture_image(self):
+        self.canvas2.destroy() # test
         if self.CameraUpdate:
-            self.CameraUpdate = False
+            # self.CameraUpdate = False #figure out why this is causing an issue. 
             self.capture_button.config(text="Take Another Picture?")
             self.capture_button.place(x=self.findCenterx(self.capture_button), y=730)
-
             if not self.image_saved:
-                output_path = "frames/plant_stuff/captured_image.jpg"
+                output_path = "assets/captured_image.jpg"
                 ret, frame = self.camera.read()
 
                 if ret:
@@ -290,10 +318,30 @@ class Plant(tk.Frame):
                         ]  # Get predictions for the first image (assuming batch size is 1)
 
                         if predictions.numel() == 0:
-                            raise Exception(
-                                "\nPlease make sure to take image to where the background is bright enough.\n\nPlease try again."
+                            self.image_saved = False # Testing purposes
+                            self.canvas2 = Canvas(
+                                self,
+                                bg="#228B22",
+                                height=225,
+                                width=634,
+                                bd=1,  # Set border width to 1 (or adjust to your preference)
+                                highlightbackground="Black",  # Set the border color
+                                highlightthickness=3,
+                                relief="ridge",
                             )
-                            self.plant_info_textbox.detroy()
+
+                            self.canvas2.place(x=280, y=485)
+
+
+                            self.tempText = self.canvas2.create_text(
+                                0,
+                                0,
+                                anchor="nw",
+                                text="\n   Nothing was detected at the moment. Or, the Plant/Fungi couldn't be recognized. \n\n   Please make sure to take image to where the background is bright enough.\n\n   Please try again.",
+                                fill="#FFFFFF",
+                                font=("Inter Bold", 12, "bold"),
+                            )
+                            
                         most_confident_prediction = predictions[
                             torch.argmax(predictions[:, 4])
                         ]  # Get the most confident prediction
@@ -309,13 +357,14 @@ class Plant(tk.Frame):
                         self.result = f"Detected: {class_name}"
                         self.plant_detected = f"{class_name}"
                     except Exception as e:
+                        self.image_saved = False # testing purposes
                         None
 
                     if self.result is not None:
                         print(self.plant_detected)  # for testing purposes
 
                         self.scrollbar = Scrollbar(self)
-                        self.scrollbar.place(x=890, y=480, width=30, height=280)
+                        self.scrollbar.place(x=890, y=485, width=30, height=240)
 
                         # Create a Text widget
                         self.plant_info_textbox = Text(
@@ -324,7 +373,7 @@ class Plant(tk.Frame):
                             yscrollcommand=self.scrollbar.set,  # Connect Text widget to the scrollbar
                         )
                         self.plant_info_textbox.place(
-                            x=280, y=480, width=610, height=240
+                            x=280, y=485, width=610, height=240
                         )
 
                         # Configure the scrollbar to work with the Text widget
@@ -364,15 +413,16 @@ class Plant(tk.Frame):
                             state=tk.DISABLED
                         )  # Set the Text widget to read-only state
 
+                        self.image_saved = False #testing purposes. Leave alone or do not delete. will introduce bugs if deleted. 
+
                     # Reset the image_saved flag to allow capturing another image
                     self.image_saved = False
+                    self.CameraUpdate = False # Just added this lol 
+
         else:
             self.CameraUpdate = True
-
             self.capture_button.config(text="Capture")
             self.capture_button.place(x=self.findCenterx(self.capture_button), y=730)
-
-            # self.result_label.config(text="")
             self.update_camera()
 
     def findCenterx(self, object):
