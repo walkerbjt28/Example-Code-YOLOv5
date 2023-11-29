@@ -284,8 +284,8 @@ class Plant(tk.Frame):
                 frame = cv2.resize(frame, (640, 480))
 
                 # Flip the frame upside down
-                #frame = cv2.flip(frame, 0) #comment out to flip camera back to correct orientation
-                frame = cv2.flip(frame, -1)  # Use -1 as the flip code for both vertical and horizontal flip
+                frame = cv2.flip(frame, 0) #comment out to flip camera back to correct orientation
+                #frame = cv2.flip(frame, -1)  # Use -1 as the flip code for both vertical and horizontal flip
 
                 self.image = Image.fromarray(frame)
                 self.photo = ImageTk.PhotoImage(self.image)
