@@ -5,9 +5,8 @@ import os
 import torch
 from PIL import Image, ImageTk
 
-# This code makes DC's "Super Girls" look like a game of the year contender on Nintendo Switch
 # ================================================================================================================
-# plant information. Couldn't figure out how to put this in a seperate file, so for now
+# plant information. 
 # it'll be in the same file as the plant class.
 
 
@@ -284,7 +283,7 @@ class Plant(tk.Frame):
                 frame = cv2.resize(frame, (640, 480))
 
                 # Flip the frame upside down
-                frame = cv2.flip(frame, 0) #comment out to flip camera back to correct orientation
+                #frame = cv2.flip(frame, 0) #comment out to flip camera back to correct orientation
                 #frame = cv2.flip(frame, -1)  # Use -1 as the flip code for both vertical and horizontal flip
 
                 self.image = Image.fromarray(frame)
